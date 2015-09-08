@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import TWMLMatrix
+import TWMLMatrix
 
 class TWMLMatrixTests: XCTestCase {
     
@@ -24,28 +24,24 @@ class TWMLMatrixTests: XCTestCase {
     func testConstructor() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        do{
-            let m = try Matrix(entries: [[1,2],[2,3],[4,5]])
+        var error:NSError?
+        if let m = Matrix(entries: [[1,2],[2,3],[4,5]], error: &error) {
             XCTAssertEqual(m.rowsCount, 3)
             XCTAssertEqual(m.colsCount, 2)
-        }catch{
-            XCTFail("error:\(error)")
+        }else if let e = error {
+            XCTFail("error:\(e)")
         }
-        
         
     }
     
     func testConstructorFail() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        do{
-            _ = try Matrix(entries: [[1,2],[2, 3, 3],[4,5]])
-        }catch{
-            guard let e = error as? MatrixError else{
-                XCTFail("Matrix should be error to construct.")
-                return
-            }
-            
+        
+        var error:NSError?
+        if let m = Matrix(entries: [[1,2],[2, 3, 3],[4,5]], error: &error) {
+            XCTFail("Matrix should be error to construct.")
+        }else if let e = error {
             XCTAssertEqual(e, MatrixError.ErrorWithStatus(status: Status.PrecisionMismatchError))
         }
         
